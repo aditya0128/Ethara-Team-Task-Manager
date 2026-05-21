@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ethara_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ethara}
+      POSTGRES_USER: ${POSTGRES_USER:-ethara}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ethara}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ethara_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ethara}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: ethara_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-ethara}:${POSTGRES_PASSWORD:-ethara}@db:5432/${POSTGRES_DB:-ethara}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@ethara.ai}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@123}
+      DEMO_MEMBER_EMAIL: ${DEMO_MEMBER_EMAIL:-member@ethara.ai}
+      DEMO_MEMBER_PASSWORD: ${DEMO_MEMBER_PASSWORD:-Member@123}
+      CORS_ORIGINS: "*"
+      PORT: "8001"
+    ports:
+      - "8001:8001"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL:-http://localhost:8001}
+    container_name: ethara_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  ethara_pg_data:

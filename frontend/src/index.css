@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    @apply bg-black text-white font-sans;
+    font-feature-settings: "ss01", "cv11";
+  }
+  *::selection { background-color: #F97316; color: #000; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #09090B; }
+  ::-webkit-scrollbar-thumb { background: #27272A; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+}
+
+@layer components {
+  .h-display { @apply font-display tracking-tight2; }
+  .overline { @apply uppercase text-xs tracking-widest2 text-ink-muted font-medium; }
+
+  .panel { @apply bg-bg-surface border border-line; }
+  .panel-flat { @apply bg-bg-panel border border-line rounded-md; }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium
+           transition-colors disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap;
+  }
+  .btn-primary { @apply btn bg-brand text-black hover:bg-brand-hover; }
+  .btn-success { @apply btn bg-success text-black hover:bg-success-hover; }
+  .btn-ghost  { @apply btn bg-transparent text-ink-secondary hover:text-white hover:bg-bg-panel; }
+  .btn-outline { @apply btn border border-line text-white hover:border-brand hover:text-brand; }
+  .btn-danger { @apply btn bg-transparent border border-danger/40 text-danger hover:bg-danger hover:text-black; }
+
+  .input {
+    @apply w-full bg-bg-panel border border-line rounded-md px-3 py-2 text-sm text-white
+           placeholder:text-ink-muted outline-none focus:border-brand focus:ring-1 focus:ring-brand
+           transition-colors;
+  }
+  .label { @apply text-xs font-medium text-ink-secondary mb-1.5 block; }
+
+  .chip {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium border border-line;
+  }
+  .chip-orange { @apply chip bg-brand/10 border-brand/30 text-brand; }
+  .chip-green  { @apply chip bg-success/10 border-success/30 text-success; }
+  .chip-red    { @apply chip bg-danger/10 border-danger/30 text-danger; }
+  .chip-muted  { @apply chip bg-bg-panel text-ink-secondary; }
+
+  .divider-grid > * + * { border-top: 1px solid #27272A; }
+}
+
+/* Grid-borders dashboard ruler */
+.grid-borders > * {
+  border-right: 1px solid #27272A;
+  border-bottom: 1px solid #27272A;
+}
+.grid-borders > *:nth-child(3n) { border-right: 0; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
